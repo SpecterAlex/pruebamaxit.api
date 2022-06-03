@@ -32,17 +32,21 @@ namespace Employees.Data
             parameters.Add("@PhoneNumber", employee.PhoneNumber);
             parameters.Add("@CountryId", employee.CountryId);
             response = connection.Query<Employee>(storedProcedure, parameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
-            if (response != null && employee.Beneficiaries.Count > 0)
+            if (response != null)
             {
-                int employeeId = (int)response.EmployeeId;
-                response.Beneficiaries = new();
-                foreach (var beneficiary in employee.Beneficiaries)
+                if (employee.Beneficiaries.Count > 0)
                 {
-                    beneficiary.EmployeeId = employeeId;
-                    var resultBeneficiary = _beneficiariesData.CreateBeneficiary(beneficiary);
-                    //if (resultBeneficiary)
-                    //else
-                    //log, insert o lo que se hara para guardar fallos
+                    int employeeId = (int)response.EmployeeId;
+                    response.Beneficiaries = new();
+                    foreach (var beneficiary in employee.Beneficiaries)
+                    {
+                        beneficiary.EmployeeId = employeeId;
+                        var resultBeneficiary = _beneficiariesData.CreateBeneficiary(beneficiary);
+                        //if (resultBeneficiary)
+                        //else
+                        //log, insert o lo que se hara para guardar fallos
+                    }
+
                 }
                 return response;
             }
